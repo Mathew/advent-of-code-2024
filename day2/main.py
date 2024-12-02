@@ -13,29 +13,27 @@ def load_reports():
     return reports
 
 
-def is_report_safe(levels: list[int]) -> bool:
-    incr = True
-    x, y = levels[0], levels[1]
+def is_report_safe(levels: list[int], dampen=False):
+    if sorted(levels) != levels and sorted(levels, reverse=True) != levels:
+        return False
 
-    if x > y:
-        incr = False
+    results = [abs(levels[i] - levels[i+1]) for i in range(len(levels) - 1)]
+    filtered = [r for r in results if r > 0 and r < 4]
 
-    for l in range(0, len(levels)-1):
-        n = levels[l] - levels[l+1]
+    return len(list(filtered)) == len(results)
 
-        if abs(n) < 1 or abs(n) > 3:
-            return False
 
-        if n < 0 and incr is False:
-            return False
+def is_report_safe_dampened(levels: list[int]):
+    if is_report_safe(levels):
+        return True
 
-        if n > 0 and incr is True:
-            return False
+    for index in range(0, len(levels)):
+        cl = levels.copy()
+        cl.pop(index)
+        if is_report_safe(cl):
+            return True
 
-        if n == 0:
-            return False
-
-    return True
+    return False
 
 
 def main():
@@ -45,7 +43,12 @@ def main():
     for report in reports:
         if is_report_safe(report):
             safe_reports +=1
+    print(safe_reports)
 
+    safe_reports = 0
+    for report in reports:
+        if is_report_safe_dampened(report):
+            safe_reports +=1
     print(safe_reports)
 
 

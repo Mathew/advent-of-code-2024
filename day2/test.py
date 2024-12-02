@@ -1,6 +1,6 @@
 import unittest
 
-from main import is_report_safe
+from main import is_report_safe, is_report_safe_dampened
 
 class TestIsReportSafe(unittest.TestCase):
 
@@ -25,6 +25,15 @@ class TestIsReportSafe(unittest.TestCase):
 
     def test_failure_incrementing_but_decrementing(self):
         self.assertFalse(is_report_safe([5, 4, 5, 3, 2]))
+
+    def test_part_2_examples(self):
+        self.assertTrue(is_report_safe_dampened([7, 6, 4, 2, 1]))
+        self.assertFalse(is_report_safe_dampened([1, 2, 7, 8, 9]))
+        self.assertFalse(is_report_safe_dampened([9, 7, 6, 2, 1]))
+        self.assertTrue(is_report_safe_dampened([1, 3, 2, 4, 5]))
+        self.assertTrue(is_report_safe_dampened([8, 6, 4, 4, 1]))
+        self.assertTrue(is_report_safe_dampened([1, 3, 6, 7, 9]))
+        self.assertTrue(is_report_safe_dampened([76, 77, 79, 82, 84, 87, 89, 95]))
 
 
 if __name__ == "__main__":
