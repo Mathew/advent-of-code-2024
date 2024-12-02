@@ -1,7 +1,4 @@
-import csv
 import itertools
-
-
 
 
 def get_lists() -> tuple[list[int], list[int]]:
@@ -45,7 +42,6 @@ def main():
 
     print(part_one(list_one, list_two))
     print(part_two(list_one, list_two))
-
 
 
 if __name__ == "__main__":
