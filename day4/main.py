@@ -1,5 +1,5 @@
-from copy import deepcopy
 from dataclasses import dataclass
+from typing import Callable
 
 ORDERED_LETTERS = ["X", "M", "A", "S"]
 
@@ -31,12 +31,23 @@ class Path:
 
         return p
 
+
 def calculate_radial_search_path(x:int, y: int, max_x: int, max_y:int) -> list[Path]:
     vectors = [(-1, -1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, 1), (0, -1), (1, -1)]
     path = []
     for vx, vy in vectors:
         if x + vx > -1 and y + vy > -1 and x + vx < max_x and y + vy < max_y:
             path.append(Path(x + vx, y + vy, vx, vy))
+
+    return path
+
+
+def calculate_diagonal_search_path(x: int, y:int, max_x: int, max_y: int) -> list[Path]:
+    vectors = [(-1, -1), (1, 1), (-1, 1), (1, -1)]
+    path = []
+    for vx, vy in vectors:
+        if x + vx > -1 and y + vy > -1 and x + vx < max_x and y + vy < max_y:
+            path.append(Path(x + vx, y + vy, vx * -1, vy * -1))
 
     return path
 
@@ -51,19 +62,19 @@ def load_data():
     return data
 
 
-def letters_to_positions(data):
+def letters_to_positions(data, letter):
     starting_positions = []
 
     for y in range(len(data)):
         for x in range(len(data[y])):
-            if data[y][x] == "X":
+            if data[y][x] == letter:
                 starting_positions.append((x, y))
 
     return starting_positions
 
-def search_from_position(position, data) -> int:
+def search_from_position(position, data, search_path_calculator: Callable) -> int:
     xstart, ystart = position 
-    path = calculate_radial_search_path(xstart, ystart, len(data[0]), len(data[1]))
+    path = search_path_calculator(xstart, ystart, len(data[0]), len(data[1]))
 
     count = 0
     valid_path_contents = ["M", "A", "S"]
@@ -94,22 +105,37 @@ def search_from_position(position, data) -> int:
     return count
 
 def count_xmas(data) -> int:
-    starting_positions = letters_to_positions(data)
+    starting_positions = letters_to_positions(data, "X")
 
     count = 0
     for xstart, ystart in starting_positions:
-        num_found = search_from_position((xstart, ystart), data)
+        num_found = search_from_position((xstart, ystart), data, calculate_radial_search_path)
         count += num_found
+
+    return count
+
+def count_mas(data) -> int:
+    starting_positions = letters_to_positions(data, "A")
+
+    count = 0
+    for xstart, ystart in starting_positions:
+        num_found = search_from_position((xstart, ystart), data, calculate_diagonal_search_path)
+        if num_found == 2:
+            count += 1
 
     return count
 
 def part_one(data: list[list[str]]):
     print(count_xmas(data))
 
+def part_two(data:list[list[str]]):
+    print(count_mas(data))
+
 
 def main():
     data = load_data()
     part_one(data)
+    part_two(data)
 
 
 if __name__ == "__main__":
