@@ -1,7 +1,6 @@
 import unittest
 
-from main import is_printing_ordered, group_orderings
-
+from main import is_printing_ordered, group_orderings, order_printing, part_two
 
 
 TEST_ORDERINGS = (
@@ -58,6 +57,14 @@ class TestOrdering(unittest.TestCase):
         self.assertFalse(is_printing_ordered(self.grouped_ordering, TEST_PRINTINGS[3]))
         self.assertFalse(is_printing_ordered(self.grouped_ordering, TEST_PRINTINGS[4]))
         self.assertFalse(is_printing_ordered(self.grouped_ordering, TEST_PRINTINGS[5]))
+
+    def test_order_printing(self):
+        self.assertEqual(order_printing(self.grouped_ordering, TEST_PRINTINGS[3]), [97, 75, 47, 61, 53])
+        self.assertEqual(order_printing(self.grouped_ordering, TEST_PRINTINGS[4]), [61, 29, 13])
+        self.assertEqual(order_printing(self.grouped_ordering, TEST_PRINTINGS[5]), [97, 75, 47, 29, 13])
+
+    def test_count_part_two(self):
+        self.assertEqual(part_two(group_orderings(TEST_ORDERINGS), TEST_PRINTINGS), 123)
 
 
 if __name__ == "__main__":
